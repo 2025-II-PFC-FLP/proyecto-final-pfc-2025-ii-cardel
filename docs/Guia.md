@@ -7,7 +7,6 @@ Markdown es un lenguaje de marcado ligero para crear documentos estructurados. E
 ## 📚 Sintaxis Básica
 
 ### 📝 Texto
-
 _Cursiva_ o _Cursiva_
 **Negrita** o **Negrita**
 ~~Tachado~~
