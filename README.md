@@ -8,12 +8,12 @@
 
 ## 👥 Integrantes del Grupo
 
-| Nombre Completo | Código | Rol            | Correo Electrónico        |
-| --------------- | ------ | -------------- | ------------------------- |
-| [Estudiante 1]  | 123456 | [Líder/Colab.] | [correo1@institucion.edu] |
-| [Estudiante 2]  | 123457 | [Colaborador]  | [correo2@institucion.edu] |
-| [Diego Andres Bolaños]  | 2379918 | [Colaborador]  | [diego.isiquita@correounivalle.edu.co] |
-|[Miguel Angel Arboleda Grueso]|2160253|[Colaborador]|[miguel.arboleda@correounivalle.edu.co]|
+| Nombre Completo                 | Código  | Rol            | Correo Electrónico                     |
+|---------------------------------|---------| -------------- |----------------------------------------|
+| [Estudiante 1]                  | 123456  | [Líder/Colab.] | [correo1@institucion.edu]              |
+| [Josue Jacinto Zambrano Loaiza] | 2380741 | [Colaborador]  | [josue.zambrano@correounivalle.edu.co] |
+| [Diego Andres Bolaños]          | 2379918 | [Colaborador]  | [diego.isiquita@correounivalle.edu.co] |
+| [Miguel Angel Arboleda Grueso]  | 2160253 |[Colaborador]| [miguel.arboleda@correounivalle.edu.co] |
 ---
 
 ## 📌 Descripción de la Asignación
