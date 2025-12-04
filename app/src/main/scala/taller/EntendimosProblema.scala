@@ -1,9 +1,9 @@
 package taller
+import taller.TiposRiego._
 
 import scala.collection.immutable.Vector
 // Importamos los tipos de datos comunes definidos en el objeto TiposRiego para que
 // las firmas de las funciones (Finca, Distancia, ProgRiego, etc.) sean válidas.
-import TiposRiego._
 
 class EntendimosProblema {
 

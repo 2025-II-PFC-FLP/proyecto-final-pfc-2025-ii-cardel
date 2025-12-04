@@ -4,7 +4,6 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.junit.runner.RunWith
 import org.scalatestplus.junit.JUnitRunner
 import org.junit.Assert._
-import TiposRiego._
 
 @RunWith(classOf[JUnitRunner])
 class FormalizacionTest extends AnyFunSuite {

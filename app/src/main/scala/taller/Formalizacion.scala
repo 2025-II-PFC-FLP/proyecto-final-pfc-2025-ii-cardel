@@ -1,7 +1,7 @@
 package taller
-
+import taller.TiposRiego._
 import scala.collection.immutable.Vector
-import TiposRiego._ // Importamos los tipos estáticamente
+// Importamos los tipos estáticamente
 
 class Formalizacion {
 
