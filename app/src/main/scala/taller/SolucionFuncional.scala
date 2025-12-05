@@ -5,7 +5,7 @@ import scala.util.Random
 import scala.collection.parallel.CollectionConverters._
 
 
-class SolucionFuncional {
+object SolucionFuncional {
 
 
   // ================ 2 TIPOS DE RIEGO ================
@@ -164,4 +164,5 @@ class SolucionFuncional {
       .minBy(_._2)
 
 }
+
 
