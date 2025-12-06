@@ -1,5 +1,6 @@
 package taller
 
+import taller.TiposRiego._
 import org.scalatest.funsuite.AnyFunSuite
 import org.junit.runner.RunWith
 import org.scalatestplus.junit.JUnitRunner
@@ -68,7 +69,7 @@ class FormalizacionTest extends AnyFunSuite {
     val d: Distancia = Vector(Vector(0))
     assertEquals(0, formal.costoMovilidad(finca1, prog, d))
   }
-  
+
   // generarProgramacionesRiego
   test("generarProgramacionesRiego produce todas las permutaciones posibles") {
     val perms = formal.generarProgramacionesRiego(finca3)

@@ -1,0 +1,5 @@
+package taller
+
+class CostoRiegoFincaParTest {
+
+}
