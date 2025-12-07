@@ -4,46 +4,48 @@ import org.scalatest.funsuite.AnyFunSuite
 import org.junit.runner.RunWith
 import org.scalatestplus.junit.JUnitRunner
 
+import SolucionFuncional._
+
 @RunWith(classOf[JUnitRunner])
 class TiempoInicioRiegoTest extends AnyFunSuite {
 
-  val obj = new SolucionFuncional()
+  val obj = SolucionFuncional
 
   // ---------------------------
   // Test 1: Caso simple
   // ---------------------------
   test("tIR con finca de 2 tablones y programación identidad") {
-    val f: obj.Finca = Vector(
+    val f: Finca = Vector(
       (10, 3, 1),  // tsup, treg, prio
       (12, 2, 2)
     )
-    val pi: obj.ProgRiego = Vector(0, 1) // en orden natural
+    val pi: ProgRiego = Vector(0, 1) // en orden natural
 
     val esperado = Vector(0, 3) // t0 = 0, t1 = treg(0) = 3
-    assert(obj.tIR(f, pi) == esperado)
+    assert(tIR(f, pi) == esperado)
   }
 
   // ---------------------------
   // Test 2: Cambio de orden
   // ---------------------------
   test("tIR con programación invertida") {
-    val f: obj.Finca = Vector(
+    val f: Finca = Vector(
       (10, 3, 1),
       (12, 2, 2)
     )
-    val pi: obj.ProgRiego = Vector(1, 0) // ahora primero riega el 1
+    val pi: ProgRiego = Vector(1, 0) // ahora primero riega el 1
 
     // orden: tablón 1 → tablón 0
     // tiempos: t1 = 0, t0 = treg(1) = 2
     val esperado = Vector(2, 0)
-    assert(obj.tIR(f, pi) == esperado)
+    assert(tIR(f, pi) == esperado)
   }
 
   // ---------------------------
   // Test 3: Tres tablones
   // ---------------------------
   test("tIR con 3 tablones en orden 0 → 2 → 1") {
-    val f: obj.Finca = Vector(
+    val f: Finca = Vector(
       (10, 2, 1), // t0=2
       (12, 4, 2), // t1=4
       (8, 3, 1)   // t2=3
@@ -53,7 +55,7 @@ class TiempoInicioRiegoTest extends AnyFunSuite {
     // tablón 0 en turno 0
     // tablón 1 en turno 2
     // tablón 2 en turno 1
-    val pi: obj.ProgRiego = Vector(0, 2, 1)
+    val pi: ProgRiego = Vector(0, 2, 1)
 
     // orden: 0, 2, 1
     // tiempos: 2, 3, 4
@@ -64,20 +66,20 @@ class TiempoInicioRiegoTest extends AnyFunSuite {
     //  t2 = acumulados(1) = 2
     val esperado = Vector(0, 5, 2)
 
-    assert(obj.tIR(f, pi) == esperado)
+    assert(tIR(f, pi) == esperado)
   }
 
   // ---------------------------
   // Test 4: Todos los tiempos iguales
   // ---------------------------
   test("tIR con treg iguales para todos los tablones") {
-    val f: obj.Finca = Vector(
+    val f: Finca = Vector(
       (10, 5, 1),
       (12, 5, 2),
       (11, 5, 3)
     )
 
-    val pi: obj.ProgRiego = Vector(2, 0, 1)
+    val pi: ProgRiego = Vector(2, 0, 1)
     // orden: tablones en turnos 0,1,2 son: 1,2,0 → según pi.indexOf(turno)
     // tiempos de riego: treg(1)=5, treg(2)=5, treg(0)=5
     // acumulados: [0, 5, 10]
@@ -87,21 +89,21 @@ class TiempoInicioRiegoTest extends AnyFunSuite {
     // t2 = acumulados(pi(2)=1) = 5
 
     val esperado = Vector(10, 0, 5)
-    assert(obj.tIR(f, pi) == esperado)
+    assert(tIR(f, pi) == esperado)
   }
 
   // ---------------------------
   // Test 5: Caso de 4 tablones
   // ---------------------------
   test("tIR con 4 tablones y programación arbitraria") {
-    val f: obj.Finca = Vector(
+    val f: Finca = Vector(
       (15, 1, 1),  // t0 = 1
       (12, 3, 2),  // t1 = 3
       (14, 2, 3),  // t2 = 2
       (10, 4, 2)   // t3 = 4
     )
 
-    val pi: obj.ProgRiego = Vector(3, 0, 2, 1)
+    val pi: ProgRiego = Vector(3, 0, 2, 1)
 
     // orden de riego:
     // turno 0 → tablón 1
@@ -119,7 +121,7 @@ class TiempoInicioRiegoTest extends AnyFunSuite {
 
     val esperado = Vector(9, 0, 7, 3)
 
-    assert(obj.tIR(f, pi) == esperado)
+    assert(tIR(f, pi) == esperado)
   }
 
 }
