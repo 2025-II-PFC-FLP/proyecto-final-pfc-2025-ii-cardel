@@ -1,6 +1,7 @@
 package taller
 import common._
 import SolucionFuncional._
+import common.parallel
 object SolucionFuncionalPar {
 
   // ------------------------------------------------------------------
@@ -65,6 +66,138 @@ object SolucionFuncionalPar {
     val order = Vector.tabulate(f.length)(j => pi.indexOf(j))
     // Construye el árbol y devuelve la suma total almacenada en la raíz
     construirArbolDistancias(order, d).res
+  }
+
+  //  3.2 GENERACIÓN PARALELA
+  /**
+   * Genera todas las permutaciones de 0 hasta n-1 de forma paralela
+   * usando divide y vencerás + parallel
+   */
+  def permsPar(xs: Vector[Int], prof: Int = 4): Vector[Vector[Int]] = {
+
+    def generar(xs: Vector[Int], profundidad: Int): Vector[Vector[Int]] = {
+      if (xs.isEmpty) Vector(Vector())
+      else if (xs.length == 1) Vector(xs)
+      else if (profundidad >= prof) {
+        // Versión secuencial cuando la profundidad es suficiente
+        SolucionFuncional.perms(xs)
+      } else {
+        // Para paralelizar, procesamos cada posible primer elemento en paralelo
+        val resultados = for {
+          i <- xs.indices.toVector
+          elem = xs(i)
+          resto = xs.patch(i, Nil, 1)  // Remove element at index i
+        } yield {
+          // Procesar el resto recursivamente
+          if (profundidad < prof - 1 && xs.length > 3) {
+            // Procesar en paralelo para casos más grandes
+            parallel(
+              generar(resto, profundidad + 1),
+              Vector.empty[Vector[Int]] // tarea dummy para balance
+            )._1.map(perm => elem +: perm)
+          } else {
+            // Procesar secuencialmente
+            generar(resto, profundidad + 1).map(perm => elem +: perm)
+          }
+        }
+
+        resultados.flatten
+      }
+    }
+
+    generar(xs, 0)
+  }
+
+  /**
+   * Versión alternativa más eficiente usando .par
+   */
+  def permsPar2(xs: Vector[Int], prof: Int = 4): Vector[Vector[Int]] = {
+    if (xs.isEmpty) Vector(Vector())
+    else if (xs.length == 1) Vector(xs)
+    else if (prof <= 0 || xs.length <= 3) {
+      // Secuencial para casos pequeños
+      SolucionFuncional.perms(xs)
+    } else {
+      // Dividir en grupos para procesar en paralelo
+      val grupos = xs.indices.grouped(math.max(1, xs.length / 4)).toVector
+
+      val resultadosPar = grupos.flatMap { indicesGrupo =>
+        // Procesar cada grupo
+        indicesGrupo.flatMap { i =>
+          val elem = xs(i)
+          val resto = xs.patch(i, Nil, 1)
+          // Generar permutaciones del resto
+          val permsResto = permsPar2(resto, prof - 1)
+          // Añadir el elemento al principio
+          permsResto.map(perm => elem +: perm)
+        }
+      }
+
+      resultadosPar
+    }
+  }
+
+  /**
+   * Versión que simplemente llama a la secuencial para n pequeños
+   * y solo paraleliza para n grandes
+   */
+  def generarProgramacionesRiegoPar(f: Finca, prof: Int = 4): Vector[ProgRiego] = {
+    val n = f.length
+
+    if (n <= 6) {
+      // Para n pequeño, es más eficiente hacerlo secuencial
+      SolucionFuncional.generarProgramacionesRiego(f)
+    } else {
+      val indices = Vector.tabulate(n)(identity)
+      val permutaciones = permsPar2(indices, prof)
+      permutaciones.map(orderToProg)
+    }
+  }
+
+  def generarProgramacionesRiegoPar(f: Finca): Vector[ProgRiego] =
+    generarProgramacionesRiegoPar(f, prof = 4)
+
+
+
+
+  // 3.3 BÚSQUEDA ÓPTIMA PARALELA
+
+  /**
+   * Calcula el costo total de una programación dada
+   */
+  def costoTotal(pi: ProgRiego, f: Finca, d: Distancia): Int = {
+    val cr = costoRiegoFincaPar(f, pi, prof = 6, limite = 4)
+    val cm = costoMovilidadPar(f, pi, d)
+    cr + cm
+  }
+
+  /**
+   * Encuentra la programación con menor costo usando paralelismo de tareas
+   */
+  def ProgramacionRiegoOptimoPar(f: Finca, d: Distancia, prof: Int = 6): (ProgRiego, Int) = {
+    val todas = generarProgramacionesRiegoPar(f, prof)
+
+    def buscarMejor(ini: Int, fin: Int, profundidad: Int): (ProgRiego, Int) = {
+      if (fin - ini <= 1) {
+        val pi = todas(ini)
+        val costo = costoTotal(pi, f, d)
+        (pi, costo)
+      } else if (profundidad >= prof) {
+        // Secuencial en el segmento
+        todas.slice(ini, fin)
+          .map(pi => (pi, costoTotal(pi, f, d)))
+          .minBy(_._2)
+      } else {
+        val mid = (ini + fin) / 2
+        val (mejorIzq, mejorDer) = parallel(
+          buscarMejor(ini, mid, profundidad + 1),
+          buscarMejor(mid, fin, profundidad + 1)
+        )
+        if (mejorIzq._2 <= mejorDer._2) mejorIzq else mejorDer
+      }
+    }
+
+    buscarMejor(0, todas.length, 0)
   }
 
 
